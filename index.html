@@ -374,23 +374,21 @@ function analyze(){
  let counts=Array(10).fill(0); rs.join('').split('').forEach(d=>counts[+d]++);
  let cls=counts.map(n=>n>=4?'HIGH':n>=2?'MED':'RARE');
  document.getElementById("digits").innerHTML=counts.map((n,d)=>`<div class="digit ${cls[d].toLowerCase()}"><b>${d}</b><br>${n}<br><span class="muted">${cls[d]}</span></div>`).join("");
- let heroes=counts.map((n,d)=>n>=4 && !mc.includes(String(d))?d:null).filter(x=>x!==null);
- document.getElementById("heroes").innerHTML=heroes.length?heroes.map(d=>`<span class="pill heroDigit">${d}</span>`).join(""):'<span class="muted">HERO இல்லை</span>';
+ 
+ 
 
  const pb=pendingByBoard(rs);
- document.getElementById("pendingBoards").innerHTML=["A","B","C"].map(k=>{if(document.getElementById("pendingBoards"))document.getElementById("pendingBoards").innerHTML=["A","B","C"].map(k=>{
-   const vals=pb[k];
-   return `<div class="rotationBox"><div class="rotationLabel">${k}-Board pending order</div>`+
-     (vals.length?vals.map(x=>`<span class="rotationCombo ${x.count===0?'pendingRare':''}">${x.d} × ${x.count}</span>`).join(""):'<span class="muted">Data இல்லை</span>')+
-     `</div>`;
- }).join("");
+document.getElementById("boards").innerHTML=["A","B","C"].map((k,pos)=>{
+const top=top10ForPosition(rs,pos);
+return `<div class="board"><b>${k}-Board Top 10</b><div class="row">${
+top.length?top.map(([p,n])=>`<span class="pair">${p} × ${n}</span>`).join(""):'<span class="muted">≥5 eligible pair இல்லை</span>'
+}</div></div>`;
+}).join("");
 
- document.getElementById("boards").innerHTML=["A","B","C"].map((k,pos)=>{
-   const top=top10ForPosition(rs,pos);
-   return `<div class="board"><b>${k}-Board Top 10</b><div class="row">${
-     top.length?top.map(([p,n])=>`<span class="pair">${p} × ${n}</span>`).join(""):'<span class="muted">≥5 eligible pair இல்லை</span>'
-   }</div></div>`;
- }).join("");
+ 
+
+   
+  
 
  const df=exactDoubleFollow(rs);
  document.getElementById("doubleFollow").innerHTML=df.length?df.map(x=>
