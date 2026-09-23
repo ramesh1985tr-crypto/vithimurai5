@@ -108,8 +108,11 @@ function clearSavedShow(){
 function updateStatus(){
   const rs=document.getElementById("results").value.split(/[\s,]+/).filter(Boolean)
     .map(x=>x.replace(/\D/g,'')).filter(x=>x.length===3).slice(-10);
-  document.getElementById("statusShow").textContent=current;
-  document.getElementById("statusDays").textContent=`${rs.length} / 10`;
+  
+  const statusShowEl=document.getElementById("statusShow");
+const statusDaysEl=document.getElementById("statusDays");
+if(statusShowEl)statusShowEl.textContent=current;
+if(statusDaysEl)statusDaysEl.textContent=`${rs.length} / 10`;
 }
 function runFullWorkflow(){
   analyze();
@@ -375,7 +378,7 @@ function analyze(){
  document.getElementById("heroes").innerHTML=heroes.length?heroes.map(d=>`<span class="pill heroDigit">${d}</span>`).join(""):'<span class="muted">HERO இல்லை</span>';
 
  const pb=pendingByBoard(rs);
- document.getElementById("pendingBoards").innerHTML=["A","B","C"].map(k=>{
+ document.getElementById("pendingBoards").innerHTML=["A","B","C"].map(k=>{if(document.getElementById("pendingBoards"))document.getElementById("pendingBoards").innerHTML=["A","B","C"].map(k=>{
    const vals=pb[k];
    return `<div class="rotationBox"><div class="rotationLabel">${k}-Board pending order</div>`+
      (vals.length?vals.map(x=>`<span class="rotationCombo ${x.count===0?'pendingRare':''}">${x.d} × ${x.count}</span>`).join(""):'<span class="muted">Data இல்லை</span>')+
