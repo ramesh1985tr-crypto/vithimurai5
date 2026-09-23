@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="ta">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111827">
+<link rel="manifest" href="manifest.json">
+<title>Formula Pro V2.1</title>
+<style>
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#0b1020;color:#f5f7ff}
+.wrap{max-width:760px;margin:auto;padding:16px}.hero{padding:18px;border-radius:22px;background:linear-gradient(135deg,#172554,#312e81);box-shadow:0 10px 35px #0006}
+h1{margin:0 0 4px;font-size:27px}.muted{color:#b9c2d9;font-size:13px}
+.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:14px 0}.tab{border:0;border-radius:12px;padding:11px;background:#1f2937;color:#fff;font-weight:700}.tab.active{background:#6366f1}
+.card{background:#151b2d;border:1px solid #293149;border-radius:18px;padding:15px;margin:12px 0}
+input,textarea,select{width:100%;box-sizing:border-box;background:#0d1324;color:#fff;border:1px solid #34405e;border-radius:11px;padding:11px;margin:6px 0 10px}
+button.action{border:0;border-radius:12px;padding:12px 15px;background:#22c55e;color:#04120a;font-weight:800;margin-right:7px}
+button.secondary{border:1px solid #465273;border-radius:12px;padding:11px 14px;background:#20283e;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.digits{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:10px}.digit{padding:9px 3px;border-radius:10px;text-align:center;background:#20283e}.high{outline:2px solid #ef4444}.med{outline:2px solid #eab308}.rare{opacity:.55}
+.pill{display:inline-block;padding:5px 8px;border-radius:999px;background:#26304a;font-size:12px;margin:3px}.heroDigit{background:#7c3aed}.board{padding:10px;border-radius:12px;background:#101729;margin-top:8px}.row{display:flex;gap:6px;flex-wrap:wrap}.pair{padding:7px 9px;background:#26304a;border-radius:9px}.note{font-size:12px;color:#aeb8d1;line-height:1.45}
+
+.comboGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:10px}
+.combo{background:#20283e;border-radius:12px;padding:10px;font-size:20px;font-weight:800;text-align:center;letter-spacing:1px}
+.double{background:#3a2430}.single{background:#243a2d}
+.sectionTitle{margin-top:12px;font-weight:800}
+
+.rotationBox{background:#101729;border-radius:12px;padding:10px;margin-top:8px}
+.rotationLabel{font-weight:800;margin-bottom:6px}.rotationCombo{padding:7px 9px;border-radius:9px;background:#26304a;margin:3px;display:inline-block}
+.pendingHigh{outline:2px solid #22c55e}.pendingRare{opacity:.5}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="hero">
+    <h1>Formula Pro V2.1</h1>
+    <div class="muted">10-day analysis • A/B/C Board • Follow Numbers</div>
+  </section>
+  <div class="tabs" id="tabs"></div>
+
+  <div class="card">
+    <b>10 நாள் 3-digit results</b>
+    <div class="note">ஒவ்வொரு வரியிலும் ஒரு 3-digit result. Current show மட்டும் கணக்கில் எடுக்கப்படும்.</div>
+    <textarea id="results" rows="5" placeholder="உதா:
+123
+450
+781
+..."></textarea>
+    <div class="grid">
+      <label>MC1<input id="mc1" maxlength="6" inputmode="numeric"></label>
+      <label>MC2<input id="mc2" maxlength="6" inputmode="numeric"></label>
+    </div>
+    <button class="action" onclick="analyze()">Analyze</button>
+    <button class="secondary" onclick="clearAll()">Clear</button>
+  </div>
+
+  <div class="card" id="pressure"><b>Digit Pressure</b><div class="note">HIGH ≥4 • MED 2–3 • RARE 0–1</div><div id="digits" class="digits"></div></div>
+
+  <div class="card"><b>HERO — Non-MC HIGH</b><div id="heroes" class="row"></div></div>
+
+  <div class="card"><b>A / B / C Board — Top 10</b>
+      <div class="note">ஒவ்வொரு trigger digit-க்கும் trigger day exclude செய்து அடுத்த 5 result-days-ல் AB/AC/BC unordered pairs count. Frequency ≥5 மட்டும் eligible.</div>
+      <div id="boards"></div>
+    </div>
+    <div class="card"><b>Double-Follow — Next 3 result-days</b>
+      <div class="note">Exact AB/AC/BC pair order trigger. Trigger result-க்கு அடுத்த 3 results-ல் AB/AC/BC-ல் doubles (00,11,...99) உள்ளதா என்று check.</div>
+      <div id="doubleFollow"></div>
+    </div>
+
+  <div class="card"><b>Follow Numbers — next 5 result-days</b><div class="note">A/B/BC unordered pairs; eligibility threshold ≥5. Trigger day excluded.</div><div id="follow"></div></div>
+
+  <div class="card">
+<b>MAIN FORMULA — V1.5</b>
+<div class="note">Rule engine: A/B/C-ல் தலா 1 digit; 1st position HERO only; HERO max 2 uses in Main 6; Main combos-ல் doubles இல்லை.</div>
+<div id="mainFormula"></div>
+</div>
+<div class="card"><b>R1 / R2 / R3</b><div id="rotation" class="row"></div></div>
+  <div class="card"><div class="note">இந்த V1.3 analysis historical pattern calculation மட்டும். இது எதிர்கால result-ஐ உறுதி செய்யாது.</div></div>
+</div>
+<script>
+const shows=["1 PM","3 PM","6 PM","8 PM"];
+let current="1 PM";
+document.getElementById("tabs").innerHTML=shows.map((s,i)=>`<button class="tab ${i===0?'active':''}" onclick="setShow('${s}',this)">${s}</button>`).join("");
+const sampleData={
+"1 PM":["388","782","876","988","678","122","434","731","702","293"],
+"3 PM":["979","635","460","215","207","384","700","572","205","712"],
+"6 PM":["752","311","473","187","958","408","697","316","709","000"],
+"8 PM":["904","456","620","987","173","510","841","569","323","650"]
+};
+function loadUserDataset(){
+  document.getElementById("results").value=(sampleData[current]||[]).join("\n");
+  analyze();
+}
+function saveCurrentShow(){
+  const all=JSON.parse(localStorage.getItem("formulaShowData")||"{}");
+  all[current]=document.getElementById("results").value.split(/[\s,]+/).filter(Boolean);
+  localStorage.setItem("formulaShowData",JSON.stringify(all));
+  alert(current+" saved.");
+}
+function loadCurrentShow(){
+  const all=JSON.parse(localStorage.getItem("formulaShowData")||"{}");
+  if(all[current]) document.getElementById("results").value=all[current].join("\n");
+  analyze();
+}
+function clearSavedShow(){
+  const all=JSON.parse(localStorage.getItem("formulaShowData")||"{}");
+  delete all[current]; localStorage.setItem("formulaShowData",JSON.stringify(all));
+  alert(current+" saved data cleared.");
+}
+function updateStatus(){
+  const rs=document.getElementById("results").value.split(/[\s,]+/).filter(Boolean)
+    .map(x=>x.replace(/\D/g,'')).filter(x=>x.length===3).slice(-10);
+  document.getElementById("statusShow").textContent=current;
+  document.getElementById("statusDays").textContent=`${rs.length} / 10`;
+}
+function runFullWorkflow(){
+  analyze();
+  updateStatus();
+  const rs=document.getElementById("results").value.split(/[\s,]+/).filter(Boolean)
+    .map(x=>x.replace(/\D/g,'')).filter(x=>x.length===3).slice(-10);
+  const mc=(document.getElementById("mc1").value+document.getElementById("mc2").value).replace(/\D/g,'');
+  const steps=[
+    ["1","Load correct show dataset",rs.length===10],
+    ["2","MC input status",mc.length>0],
+    ["3","Digit pressure",rs.length>0],
+    ["4","Repeating / missing digits",rs.length>0],
+    ["5","Strong pairs",rs.length>0],
+    ["6","HIGH / MED / RARE",rs.length>0],
+    ["7","Original Formula layers",rs.length>0],
+    ["8","Verification",rs.length>0]
+  ];
+  document.getElementById("workflowReport").innerHTML=steps.map(x=>`<div><b>${x[2]?'✓':'•'} ${x[0]}. ${x[1]}</b></div>`).join("");
+}
+function exportShow(){
+  const payload={show:current,results:document.getElementById("results").value.split(/[\s,]+/).filter(Boolean),
+    mc1:document.getElementById("mc1").value,mc2:document.getElementById("mc2").value,
+    exportedAt:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`formula-pro-${current.replace(/\s/g,'')}.json`;a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function importShow(ev){
+  const f=ev.target.files[0]; if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{try{
+    const p=JSON.parse(r.result);
+    if(p.show && shows.includes(p.show)) current=p.show;
+    document.getElementById("results").value=(p.results||[]).join("\n");
+    document.getElementById("mc1").value=p.mc1||"";
+    document.getElementById("mc2").value=p.mc2||"";
+    analyze();updateStatus();
+  }catch(e){alert("Invalid Formula Pro JSON file.");}};
+  r.readAsText(f);
+}
+function setShow(s,el){
+ current=s; document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); el.classList.add('active');
+ const all=JSON.parse(localStorage.getItem("formulaShowData")||"{}");
+ document.getElementById("results").value=(all[current]||sampleData[current]||[]).join("\n");
+ analyze(); updateStatus()
+}
+function pairs(x){return [[x[0]+x[1], 'AB'],[x[0]+x[2],'AC'],[x[1]+x[2],'BC']]}
+function unorderedPair(a,b){return [a,b].sort().join('')}
+function resultPairs(r){
+  return [{type:"AB", pair:r[0]+r[1]},{type:"AC", pair:r[0]+r[2]},{type:"BC", pair:r[1]+r[2]}]
+}
+function top10ForPosition(rs,pos){
+  const total={};
+  for(let i=0;i<rs.length;i++){
+    const trigger=rs[i][pos];
+    const freq={};
+    rs.slice(i+1,i+6).forEach(n=>{
+      resultPairs(n).forEach(x=>{
+        const p=unorderedPair(x.pair[0],x.pair[1]);
+        freq[p]=(freq[p]||0)+1;
+      });
+    });
+    Object.entries(freq).forEach(([p,n])=>{
+      if(n>=5) total[p]=(total[p]||0)+n;
+    });
+  }
+  return Object.entries(total).sort((a,b)=>b[1]-a[1]).slice(0,10);
+}
+function exactDoubleFollow(rs){
+  const out=[];
+  rs.forEach((trigger,i)=>{
+    const next=rs.slice(i+1,i+4);
+    if(next.length===0)return;
+    resultPairs(trigger).forEach(x=>{
+      const doubles=[];
+      next.forEach((r,di)=>{
+        resultPairs(r).forEach(y=>{
+          if(y.pair[0]===y.pair[1]) doubles.push({day:di+1,result:r,pair:y.pair});
+        });
+      });
+      if(doubles.length) out.push({trigger, type:x.type, pair:x.pair, doubles});
+    });
+  });
+  return out;
+}
+function boardMap(){
+  return {
+    A: [
+      ["0","1","2","3","4","5","6","7","8","9"]
+    ],
+    B: [
+      ["0","1","2","3","4","5","6","7","8","9"]
+    ],
+    C: [
+      ["0","1","2","3","4","5","6","7","8","9"]
+    ]
+  };
+}
+function deterministicCombos(rs, heroes){
+  // Candidate digits are pressure-ranked, then stable digit order.
+  const counts=Array(10).fill(0);
+  rs.join('').split('').forEach(d=>counts[+d]++);
+  const ranked=[...Array(10).keys()].sort((a,b)=>counts[b]-counts[a] || a-b);
+  const hero=heroes.map(Number);
+  const nonHero=ranked.filter(d=>!hero.includes(d));
+  const firstPool=hero.length?hero:ranked;
+
+  // Use A/B/C candidate pools derived from ranked digits, but enforce one digit per board.
+  // Boards are represented as digit pools in this V1.5 engine; actual board mappings can be
+  // substituted without changing the combo validator.
+  const A=[...firstPool], B=[...ranked], C=[...ranked];
+
+  const combos=[];
+  const heroUse={};
+  for(const a of A){
+    for(const b of B){
+      for(const c of C){
+        const s=`${a}${b}${c}`;
+        if(a===b && b===c) continue; // triple/double patterns are excluded from Main
+        if(a===b || a===c || b===c) continue; // no doubles in Main
+        const hc=(hero.includes(a)?1:0)+(hero.includes(b)?1:0)+(hero.includes(c)?1:0);
+        // "HERO max 2 uses" is tracked across final six combos below.
+        combos.push({s,a,b,c,hc,score:counts[a]+counts[b]+counts[c]});
+      }
+    }
+  }
+  combos.sort((x,y)=>y.score-x.score || x.s.localeCompare(y.s));
+
+  const chosen=[];
+  const usedHero={};
+  for(const x of combos){
+    // 1st position HERO only if HERO exists.
+    if(hero.length && !hero.includes(x.a)) continue;
+    let ok=true;
+    for(const h of hero) {
+      const add=(x.a===h?1:0)+(x.b===h?1:0)+(x.c===h?1:0);
+      if((usedHero[h]||0)+add>2){ok=false;break;}
+    }
+    if(!ok) continue;
+    chosen.push(x);
+    for(const h of hero){
+      const add=(x.a===h?1:0)+(x.b===h?1:0)+(x.c===h?1:0);
+      usedHero[h]=(usedHero[h]||0)+add;
+    }
+    if(chosen.length===6) break;
+  }
+  // If there are fewer than 6 under strict rules, do not invent random values.
+  return {chosen, usedHero};
+}
+function doublesFromCounts(rs){
+  const pairs={};
+  rs.forEach(r=>resultPairs(r).forEach(x=>{
+    if(x.pair[0]===x.pair[1]) pairs[x.pair[0]+x.pair[1]]=(pairs[x.pair[0]+x.pair[1]]||0)+1;
+  }));
+  return Object.entries(pairs).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).slice(0,3).map(x=>x[0]);
+}
+function singlesFromPressure(rs,heroes){
+  const counts=Array(10).fill(0);
+  rs.join('').split('').forEach(d=>counts[+d]++);
+  return [...Array(10).keys()].filter(d=>!heroes.includes(d)).sort((a,b)=>counts[b]-counts[a]||a-b).slice(0,2).map(String);
+}
+function saveMaps(){
+  const data={A:document.getElementById("aMap").value,B:document.getElementById("bMap").value,C:document.getElementById("cMap").value};
+  localStorage.setItem("formulaBoardMaps",JSON.stringify(data));
+  alert("Board mapping saved.");
+}
+function loadMaps(){
+  try{
+    const d=JSON.parse(localStorage.getItem("formulaBoardMaps")||"{}");
+    if(d.A!==undefined)document.getElementById("aMap").value=d.A;
+    if(d.B!==undefined)document.getElementById("bMap").value=d.B;
+    if(d.C!==undefined)document.getElementById("cMap").value=d.C;
+  }catch(e){}
+}
+function pendingByBoard(rs){
+  const out={A:[],B:[],C:[]};
+  const counts={A:Array(10).fill(0),B:Array(10).fill(0),C:Array(10).fill(0)};
+  rs.forEach(r=>{
+    counts.A[+r[0]]++; counts.B[+r[1]]++; counts.C[+r[2]]++;
+  });
+  for(const k of ["A","B","C"]){
+    out[k]=[...Array(10).keys()].sort((a,b)=>counts[k][a]-counts[k][b]||a-b)
+      .map(d=>({d,count:counts[k][d]}));
+  }
+  return out;
+}
+function rotationPatterns(){
+  return [
+    {name:"R1", A:[0,1,2], B:[3,4,5,6], C:[7,8,9]},
+    {name:"R2", A:[3,4,5,6], B:[7,8,9], C:[0,1,2]},
+    {name:"R3", A:[7,8,9], B:[0,1,2], C:[3,4,5,6]},
+    {name:"R4", A:[0,1,2], B:[7,8,9], C:[3,4,5,6]},
+    {name:"R5", A:[3,4,5,6], B:[0,1,2], C:[7,8,9]},
+    {name:"R6", A:[7,8,9], B:[3,4,5,6], C:[0,1,2]}
+  ];
+}
+function buildRotationCombos(rs, heroes){
+  const counts={A:Array(10).fill(0),B:Array(10).fill(0),C:Array(10).fill(0)};
+  rs.forEach(r=>{counts.A[+r[0]]++;counts.B[+r[1]]++;counts.C[+r[2]]++});
+  const pats=rotationPatterns(), result=[];
+  const heroUse={};
+  for(const p of pats){
+    const A=[...p.A].sort((a,b)=>counts.A[b]-counts.A[a]||a-b);
+    const B=[...p.B].sort((a,b)=>counts.B[b]-counts.B[a]||a-b);
+    const C=[...p.C].sort((a,b)=>counts.C[b]-counts.C[a]||a-b);
+    let found=null;
+    for(const a of A) for(const b of B) for(const c of C){
+      if(a===b||a===c||b===c) continue;
+      if(heroes.length && !heroes.includes(a)) continue;
+      let ok=true;
+      for(const h of heroes){
+        const add=(a===h?1:0)+(b===h?1:0)+(c===h?1:0);
+        if((heroUse[h]||0)+add>2){ok=false;break}
+      }
+      if(ok){found={s:`${a}${b}${c}`,pattern:p.name,a,b,c};break}
+    }
+    if(found){
+      result.push(found);
+      for(const h of heroes){
+        const add=(found.a===h?1:0)+(found.b===h?1:0)+(found.c===h?1:0);
+        heroUse[h]=(heroUse[h]||0)+add;
+      }
+    }
+    if(result.length===6) break;
+  }
+  return result;
+}
+function runTest(){
+  const rs=document.getElementById("results").value.split(/[\s,]+/).filter(Boolean)
+    .map(x=>x.replace(/\D/g,'')).filter(x=>x.length===3).slice(-10);
+  const expected6=document.getElementById("expected6").value.split(/[\s,]+/).filter(Boolean);
+  const expectedD=document.getElementById("expectedD").value.split(/[\s,]+/).filter(Boolean);
+  const mc=(document.getElementById("mc1").value+document.getElementById("mc2").value).split('').filter(x=>/\d/.test(x));
+  const counts=Array(10).fill(0); rs.join('').split('').forEach(d=>counts[+d]++);
+  const heroes=counts.map((n,d)=>n>=4&&!mc.includes(String(d))?d:null).filter(x=>x!==null);
+  const combos=buildRotationCombos(rs,heroes).map(x=>x.s);
+  const doubles=doublesFromCounts(rs);
+  const checks=[
+    ["10-day input",rs.length===10,`${rs.length}/10 results`],
+    ["HERO rule",heroes.length===0 || combos.every(x=>heroes.includes(+x[0])),heroes.length?heroes.join(", "):"none"],
+    ["No doubles in Main",combos.every(x=>x[0]!==x[1]&&x[0]!==x[2]&&x[1]!==x[2]),`${combos.length} combos`],
+    ["Main 6 availability",combos.length===6,`${combos.length}/6`],
+    ["Double layer",doubles.length<=3,`${doubles.length}/3`]
+  ];
+  let htmlOut=checks.map(c=>`<div><b>${c[1]?'✓':'✗'} ${c[0]}</b> — ${c[2]}</div>`).join("");
+  if(expected6.length){
+    const match=expected6.filter(x=>combos.includes(x)).length;
+    htmlOut+=`<div>Expected Main-6 matches: <b>${match}/${expected6.length}</b></div>`;
+  }
+  if(expectedD.length){
+    const match=expectedD.filter(x=>doubles.includes(x)).length;
+    htmlOut+=`<div>Expected Doubles matches: <b>${match}/${expectedD.length}</b></div>`;
+  }
+  document.getElementById("testReport").innerHTML=htmlOut;
+}
+function analyze(){
+ let rs=document.getElementById("results").value.split(/[\s,]+/).filter(Boolean).map(x=>x.replace(/\D/g,'')).filter(x=>x.length===3).slice(-10);
+ let mc=(document.getElementById("mc1").value+document.getElementById("mc2").value).split('').filter(x=>/\d/.test(x));
+ let counts=Array(10).fill(0); rs.join('').split('').forEach(d=>counts[+d]++);
+ let cls=counts.map(n=>n>=4?'HIGH':n>=2?'MED':'RARE');
+ document.getElementById("digits").innerHTML=counts.map((n,d)=>`<div class="digit ${cls[d].toLowerCase()}"><b>${d}</b><br>${n}<br><span class="muted">${cls[d]}</span></div>`).join("");
+ let heroes=counts.map((n,d)=>n>=4 && !mc.includes(String(d))?d:null).filter(x=>x!==null);
+ document.getElementById("heroes").innerHTML=heroes.length?heroes.map(d=>`<span class="pill heroDigit">${d}</span>`).join(""):'<span class="muted">HERO இல்லை</span>';
+
+ const pb=pendingByBoard(rs);
+ document.getElementById("pendingBoards").innerHTML=["A","B","C"].map(k=>{
+   const vals=pb[k];
+   return `<div class="rotationBox"><div class="rotationLabel">${k}-Board pending order</div>`+
+     (vals.length?vals.map(x=>`<span class="rotationCombo ${x.count===0?'pendingRare':''}">${x.d} × ${x.count}</span>`).join(""):'<span class="muted">Data இல்லை</span>')+
+     `</div>`;
+ }).join("");
+
+ document.getElementById("boards").innerHTML=["A","B","C"].map((k,pos)=>{
+   const top=top10ForPosition(rs,pos);
+   return `<div class="board"><b>${k}-Board Top 10</b><div class="row">${
+     top.length?top.map(([p,n])=>`<span class="pair">${p} × ${n}</span>`).join(""):'<span class="muted">≥5 eligible pair இல்லை</span>'
+   }</div></div>`;
+ }).join("");
+
+ const df=exactDoubleFollow(rs);
+ document.getElementById("doubleFollow").innerHTML=df.length?df.map(x=>
+   `<div class="board"><b>Trigger ${x.trigger} — ${x.type} ${x.pair}</b><div class="row">${
+   x.doubles.map(d=>`<span class="pair">Day +${d.day}: ${d.result} → ${d.pair}</span>`).join("")}</div></div>`).join("")
+   :'<span class="muted">Next 3 result-days-ல் matching double இல்லை / data போதவில்லை.</span>';
+
+ let followCounts={};
+ rs.forEach((r,i)=>rs.slice(i+1,i+6).forEach(n=>resultPairs(n).forEach(x=>{
+   const p=unorderedPair(x.pair[0],x.pair[1]); followCounts[p]=(followCounts[p]||0)+1;
+ })));
+ let eligible=Object.entries(followCounts).filter(([p,n])=>n>=5).sort((a,b)=>b[1]-a[1]).slice(0,10);
+ document.getElementById("follow").innerHTML=eligible.length?eligible.map(([p,n])=>`<span class="pill">${p} × ${n}</span>`).join(""):'<span class="muted">≥5 frequency pair இன்னும் இல்லை</span>';
+
+ const result=buildRotationCombos(rs,heroes);
+ const doubles=doublesFromCounts(rs);
+ const singles=singlesFromPressure(rs,heroes);
+ document.getElementById("mainFormula").innerHTML =
+   `<div class="sectionTitle">6 Rotation Combos</div>`+
+   (result.length?`<div class="comboGrid">${result.map(x=>`<div class="combo">${x.s}<div class="muted">${x.pattern}</div></div>`).join("")}</div>`:
+   `<div class="note">Locked rotation + HERO rules-க்கு valid combo கிடைக்கவில்லை. Random combo உருவாக்கப்படவில்லை.</div>`) +
+   `<div class="sectionTitle">3 Double Sets</div><div class="row">${doubles.length?doubles.map(x=>`<span class="pill double">${x}</span>`).join(""):'<span class="muted">இல்லை</span>'}</div>`+
+   `<div class="sectionTitle">2 Single Digits</div><div class="row">${singles.map(x=>`<span class="pill single">${x}</span>`).join("")||'<span class="muted">இல்லை</span>'}</div>`;
+
+ document.getElementById("rotation").innerHTML=rotationPatterns().map(p=>`<span class="pill">${p.name}: A(${p.A.map(x=>x+1).join('-')}) • B(${p.B.map(x=>x+1).join('-')}) • C(${p.C.map(x=>x+1).join('-')})</span>`).join("");
+}
+ updateStatus();
+}
+function clearAll(){document.getElementById("results").value='';document.getElementById("mc1").value='';document.getElementById("mc2").value='';analyze()}
+loadMaps(); analyze();
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));
+}
+</script>
+</body>
+</html>
