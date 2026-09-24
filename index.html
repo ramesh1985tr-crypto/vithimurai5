@@ -1849,6 +1849,191 @@ $("clear")
     clearAll
   );
 
+
+/* =========================
+   FORMULA CONTROL EVENTS
+========================= */
+
+let pendingFormula = null;
+
+
+function renderFormulaControl(){
+
+  if(!window.FORMULA_CONTROL) return;
+
+  const formula =
+    window.FORMULA_CONTROL.get();
+
+  $("formulaVersion").textContent =
+    formula.version;
+
+  const history =
+    window.FORMULA_CONTROL.history();
+
+  $("formulaHistory").textContent =
+    history.length
+      ? [
+          formula.version + " — Active",
+          ...history.map(
+            x => x.version + " — Previous"
+          )
+        ].join(" • ")
+      : formula.version + " — Active";
+
+}
+
+
+$("formulaPreview")
+  .addEventListener(
+    "click",
+    () => {
+
+      try{
+
+        const text =
+          $("formulaUpdateInput")
+            .value
+            .trim();
+
+        if(!text){
+
+          $("formulaUpdateStatus")
+            .textContent =
+            "Enter a formula rule first.";
+
+          return;
+
+        }
+
+        const result =
+          window.FORMULA_CONTROL
+            .command(text);
+
+        pendingFormula =
+          result.preview;
+
+        $("formulaUpdateStatus")
+          .textContent =
+          "🔍 Preview ready • " +
+          pendingFormula.version +
+          " • Apply Update to activate.";
+
+      }
+      catch(e){
+
+        pendingFormula = null;
+
+        $("formulaUpdateStatus")
+          .textContent =
+          "❌ " + e.message;
+
+      }
+
+    }
+  );
+
+
+$("formulaApply")
+  .addEventListener(
+    "click",
+    () => {
+
+      try{
+
+        if(!pendingFormula){
+
+          $("formulaUpdateStatus")
+            .textContent =
+            "Preview the update first.";
+
+          return;
+
+        }
+
+        const result =
+          window.FORMULA_CONTROL
+            .apply(
+              pendingFormula,
+              "Formula Control Center update"
+            );
+
+        pendingFormula = null;
+
+        $("formulaUpdateInput")
+          .value = "";
+
+        $("formulaUpdateStatus")
+          .textContent =
+          "✅ Applied • " +
+          result.newVersion +
+          " is now active.";
+
+        renderFormulaControl();
+
+      }
+      catch(e){
+
+        $("formulaUpdateStatus")
+          .textContent =
+          "❌ " + e.message;
+
+      }
+
+    }
+  );
+
+
+$("formulaRollback")
+  .addEventListener(
+    "click",
+    () => {
+
+      try{
+
+        const history =
+          window.FORMULA_CONTROL
+            .history();
+
+        if(!history.length){
+
+          $("formulaUpdateStatus")
+            .textContent =
+            "No previous formula available.";
+
+          return;
+
+        }
+
+        const result =
+          window.FORMULA_CONTROL
+            .rollback(
+              history[0].version
+            );
+
+        pendingFormula = null;
+
+        $("formulaUpdateStatus")
+          .textContent =
+          "↩️ Restored " +
+          result.restored;
+
+        renderFormulaControl();
+
+      }
+      catch(e){
+
+        $("formulaUpdateStatus")
+          .textContent =
+          "❌ " + e.message;
+
+      }
+
+    }
+  );
+
+
+renderFormulaControl();
+
 </script>
 
 </body>
