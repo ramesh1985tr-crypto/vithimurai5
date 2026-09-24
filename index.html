@@ -5,124 +5,38 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#111827">
 <link rel="manifest" href="manifest.json">
-<title>Formula Pro V2.2</title>
-
+<title>Formula Pro V2.3</title>
 <style>
 *{box-sizing:border-box}
-body{
-  margin:0;
-  font-family:system-ui,-apple-system,Segoe UI,sans-serif;
-  background:#080d18;
-  color:#f5f7ff;
-}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#080d18;color:#f5f7ff}
 .wrap{max-width:760px;margin:auto;padding:16px}
-.hero{
-  padding:22px;
-  border-radius:22px;
-  background:linear-gradient(135deg,#172554,#312e81);
-  box-shadow:0 10px 35px #0006;
-}
+.hero{padding:22px;border-radius:22px;background:linear-gradient(135deg,#172554,#312e81);box-shadow:0 10px 35px #0006}
 h1{margin:0 0 6px;font-size:28px}
-.muted{color:#aeb8cf}
-.card{
-  background:#151b2d;
-  border:1px solid #293149;
-  border-radius:18px;
-  padding:15px;
-  margin-top:12px;
-}
+.muted,.notice{color:#aeb8cf}
+.card{background:#151b2d;border:1px solid #293149;border-radius:18px;padding:15px;margin-top:12px}
 label{display:block;font-weight:700;margin-top:10px}
-textarea,input{
-  width:100%;
-  background:#0d1324;
-  color:#fff;
-  border:1px solid #34405e;
-  border-radius:11px;
-  padding:12px;
-  font-size:16px;
-}
+textarea,input{width:100%;background:#0d1324;color:#fff;border:1px solid #34405e;border-radius:11px;padding:12px;font-size:16px}
 textarea{resize:vertical}
 .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-button{
-  border:0;
-  border-radius:12px;
-  padding:14px 18px;
-  font-size:17px;
-  font-weight:800;
-}
-.action{
-  background:#22c55e;
-  color:#04120a;
-  margin-top:14px;
-}
-.secondary{
-  background:#20283e;
-  color:#fff;
-  margin-top:14px;
-}
-.status{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:10px;
-}
-.pill{
-  display:inline-block;
-  padding:8px 12px;
-  border-radius:999px;
-  background:#26304a;
-  margin:3px;
-}
-.sectionTitle{
-  margin-top:16px;
-  font-size:20px;
-  font-weight:800;
-}
-.final{
-  border:2px solid #475569;
-  background:#0f172a;
-}
-.comboGrid{
-  display:grid;
-  grid-template-columns:repeat(2,1fr);
-  gap:10px;
-  margin-top:10px;
-}
-.combo{
-  background:#202b45;
-  border-radius:15px;
-  padding:18px 8px;
-  text-align:center;
-  font-size:27px;
-  font-weight:900;
-}
+button{border:0;border-radius:12px;padding:14px 18px;font-size:17px;font-weight:800}
+.action{background:#22c55e;color:#04120a;margin-top:14px}
+.secondary{background:#20283e;color:#fff;margin-top:14px}
+.status{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pill{display:inline-block;padding:8px 12px;border-radius:999px;background:#26304a;margin:3px}
+.sectionTitle{margin-top:16px;font-size:20px;font-weight:800}
+.final{border:2px solid #475569;background:#0f172a}
+.comboGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:10px}
+.combo{background:#202b45;border-radius:15px;padding:18px 8px;text-align:center;font-size:27px;font-weight:900}
 .small{font-size:12px;color:#aeb8cf}
-.double{
-  background:#3a2430;
-}
-.single{
-  background:#243a2d;
-}
+.double{background:#3a2430}
+.single{background:#243a2d}
 .warn{color:#fbbf24}
-.digitGrid{
-  display:grid;
-  grid-template-columns:repeat(5,1fr);
-  gap:7px;
-}
-.digit{
-  padding:10px 4px;
-  border-radius:12px;
-  text-align:center;
-  background:#20283e;
-}
+.error{color:#f87171}
+.digitGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.digit{padding:10px 4px;border-radius:12px;text-align:center;background:#20283e}
 .high{outline:2px solid #ef4444}
 .med{outline:2px solid #eab308}
 .rare{opacity:.65}
-.notice{
-  font-size:13px;
-  line-height:1.45;
-  color:#aeb8d1;
-}
 </style>
 </head>
 
@@ -130,21 +44,15 @@ button{
 <div class="wrap">
 
 <section class="hero">
-<h1>Formula Pro V2.2</h1>
-<div class="muted">
-10-Day Master Formula • Final Output
-</div>
+<h1>Formula Pro V2.3</h1>
+<div class="muted">10-Day Master Formula • Final Output</div>
 </section>
 
 <div class="card">
 <b>10 நாள் 3-digit results</b>
+<div class="notice">ஒரு வரியில் ஒரு 3-digit result.</div>
 
-<div class="notice">
-ஒரு வரியில் ஒரு 3-digit result.
-</div>
-
-<textarea id="results" rows="10"
-placeholder="388
+<textarea id="results" rows="10">388
 782
 876
 988
@@ -153,7 +61,7 @@ placeholder="388
 434
 731
 702
-293"></textarea>
+293</textarea>
 
 <div class="grid">
 <div>
@@ -167,12 +75,14 @@ placeholder="388
 </div>
 </div>
 
-<button id="analyzeBtn" class="action">Analyze</button>
-<button id="clearBtn" class="secondary">Clear</button>
+<button id="analyzeBtn" class="action" type="button">Analyze</button>
+<button id="clearBtn" class="secondary" type="button">Clear</button>
 
 <div class="status">
 <span class="pill" id="dayStatus">Results: 0 / 10</span>
 </div>
+
+<div id="appError" class="notice error"></div>
 </div>
 
 <div class="card">
@@ -183,20 +93,17 @@ placeholder="388
 
 <div class="card">
 <b>HERO – Non-MC HIGH</b>
-<div class="notice">
-HIGH digits-ல் MC digits நீக்கப்பட்ட பிறகு HERO.
-</div>
+<div class="notice">HIGH digits-ல் MC digits நீக்கப்பட்ட பிறகு HERO.</div>
 <div id="heroes" class="status"></div>
 </div>
 
 <div class="card final">
+
 <div class="sectionTitle">MAIN FORMULA FINAL</div>
 
 <div class="notice">
-Master Formula rules:
-HERO first position when available • no doubles in Main •
-no digit used more than 2 times across Main 6 •
-0–9 coverage checked before final output.
+HERO first position when available • no repeated digit inside Main •
+no digit used more than 2 times across Main 6 • 0–9 coverage verified.
 </div>
 
 <div class="sectionTitle">MAIN 6 COMBOS</div>
@@ -209,11 +116,13 @@ no digit used more than 2 times across Main 6 •
 <div id="singleDigits" class="status"></div>
 
 <div id="verification" class="notice"></div>
-</div>
 
+</div>
 </div>
 
 <script>
+"use strict";
+
 const $=id=>document.getElementById(id);
 
 function parseResults(){
@@ -234,7 +143,9 @@ function countDigits(rs){
   const c=Array(10).fill(0);
 
   rs.forEach(r=>{
-    [...r].forEach(d=>c[Number(d)]++);
+    [...r].forEach(d=>{
+      c[Number(d)]++;
+    });
   });
 
   return c;
@@ -243,7 +154,7 @@ function countDigits(rs){
 function getHeroes(counts,mc){
   return counts
     .map((n,d)=>({d,n}))
-    .filter(x=>x.n>=4 && !mc.includes(x.d))
+    .filter(x=>x.n>=4&&!mc.includes(x.d))
     .map(x=>x.d);
 }
 
@@ -265,113 +176,233 @@ function renderPressure(counts){
 
 function renderHeroes(heroes){
   $("heroes").innerHTML=heroes.length
-    ? heroes.map(d=>`<span class="pill">${d}</span>`).join("")
-    : `<span class="muted">No Non-MC HIGH digit</span>`;
+    ?heroes.map(d=>`<span class="pill">${d}</span>`).join("")
+    :`<span class="muted">No Non-MC HIGH digit</span>`;
 }
 
-/*
- MASTER MAIN ENGINE
 
- Rules implemented:
- 1. Main = exactly 6 combos
- 2. HERO is first digit when HERO exists
- 3. No repeated digit inside a combo
- 4. No digit >2 uses across Main 6
- 5. Prefer pressure-ranked digits
- 6. Try to cover all 0-9 across Main 6
+/*
+ CLEAN MAIN-6 SOLVER
+
+ Rules handled:
+ • 6 Main Combos
+ • HERO first position when available
+ • No repeated digit inside one combo
+ • Maximum 2 uses per digit
+ • 0–9 coverage when a valid solution exists
 */
 
+function buildMainCombos(rs,heroes){
 
+  const counts=countDigits(rs);
+  const all=[0,1,2,3,4,5,6,7,8,9];
 
-    return true;
-  }
+  const MAX=2;
+  const FULL=(1<<10)-1;
 
-  function add(a,b,c){
-    if(!valid(a,b,c))return false;
-
-    const key=`${a}${b}${c}`;
-
-    if(combos.some(x=>x.combo===key))
-      return false;
-
-    combos.push({
-      combo:key,
-      score:counts[a]+counts[b]+counts[c]
-    });
-
-    usage[a]++;
-    usage[b]++;
-    usage[c]++;
-
-    return true;
-  }
-
-  /*
-   First pass:
-   deliberately introduce low/missing digits so
-   the six combos can cover the digit set more evenly.
-  */
-
-  const balanced=[...all].sort(
-    (a,b)=>{
-      const ua=usage[a]-usage[b];
-      if(ua!==0)return ua;
-      return counts[b]-counts[a] || a-b;
-    }
+  const ranked=[...all].sort(
+    (a,b)=>counts[b]-counts[a]||a-b
   );
 
-  for(const a of firstPool){
-    for(const b of balanced){
-      for(const c of balanced){
-        if(combos.length>=6)break;
+  let firsts=[];
 
-        if(a===b || a===c || b===c)continue;
+  if(heroes.length){
 
-        add(a,b,c);
-      }
+    const heroRanked=[...heroes].sort(
+      (a,b)=>counts[b]-counts[a]||a-b
+    );
 
-      if(combos.length>=6)break;
+    for(let i=0;i<6;i++){
+
+      const pick=heroRanked.find(
+        h=>firsts.filter(x=>x===h).length<MAX
+      );
+
+      if(pick===undefined)break;
+
+      firsts.push(pick);
     }
 
-    if(combos.length>=6)break;
+  }else{
+
+    for(const d of ranked){
+
+      if(firsts.length>=6)break;
+
+      if(firsts.filter(x=>x===d).length<MAX){
+        firsts.push(d);
+      }
+    }
   }
 
-  /*
-   If HERO restriction prevented six combinations,
-   do not invent random numbers. Return what is
-   actually valid.
-  */
+  if(firsts.length!==6){
+    return {
+      combos:[],
+      usage:Array(10).fill(0)
+    };
+  }
 
-  return {
-    combos:combos.slice(0,6),
-    usage
+  const usage=Array(10).fill(0);
+
+  firsts.forEach(d=>{
+    usage[d]++;
+  });
+
+  if(Math.max(...usage)>MAX){
+    return {
+      combos:[],
+      usage:Array(10).fill(0)
+    };
+  }
+
+  const combos=[];
+  let solution=null;
+
+  function search(index,currentUsage,mask){
+
+    if(index===6){
+
+      if(mask===FULL){
+
+        solution={
+          combos:[...combos],
+          usage:[...currentUsage]
+        };
+      }
+
+      return !!solution;
+    }
+
+    const a=firsts[index];
+    const candidates=[];
+
+    for(const b of all){
+
+      for(const c of all){
+
+        if(a===b||a===c||b===c)continue;
+
+        if(currentUsage[b]>=MAX||currentUsage[c]>=MAX)continue;
+
+        const key=`${a}${b}${c}`;
+
+        if(combos.some(x=>x.combo===key))continue;
+
+        const newMask=
+          mask|
+          (1<<a)|
+          (1<<b)|
+          (1<<c);
+
+        const newDigits=
+          all.filter(d=>
+            (newMask&(1<<d))!==0 &&
+            (mask&(1<<d))===0
+          ).length;
+
+        candidates.push({
+          key,
+          b,
+          c,
+          mask:newMask,
+          newDigits,
+          score:counts[a]+counts[b]+counts[c]
+        });
+      }
+    }
+
+    candidates.sort(
+      (x,y)=>
+        y.newDigits-x.newDigits||
+        y.score-x.score||
+        x.key.localeCompare(y.key)
+    );
+
+    for(const item of candidates){
+
+      const nextUsage=[...currentUsage];
+
+      nextUsage[item.b]++;
+      nextUsage[item.c]++;
+
+      if(Math.max(...nextUsage)>MAX)continue;
+
+      const remaining=6-(index+1);
+
+      const uncovered=
+        all.filter(
+          d=>(item.mask&(1<<d))===0
+        ).length;
+
+      if(uncovered>remaining*2)continue;
+
+      combos.push({
+        combo:item.key,
+        score:item.score
+      });
+
+      if(search(
+        index+1,
+        nextUsage,
+        item.mask
+      )){
+        return true;
+      }
+
+      combos.pop();
+    }
+
+    return false;
+  }
+
+  search(0,usage,0);
+
+  return solution||{
+    combos:[],
+    usage:Array(10).fill(0)
   };
 }
 
+
 function buildDoubleSets(rs){
+
   const counts={};
 
   rs.forEach(r=>{
+
     const a=Number(r[0]);
     const b=Number(r[1]);
     const c=Number(r[2]);
 
-    if(a===b)counts[`${a}${a}`]=(counts[`${a}${a}`]||0)+1;
-    if(a===c)counts[`${a}${a}`]=(counts[`${a}${a}`]||0)+1;
-    if(b===c)counts[`${b}${b}`]=(counts[`${b}${b}`]||0)+1;
+    if(a===b)
+      counts[`${a}${a}`]=(counts[`${a}${a}`]||0)+1;
+
+    if(a===c)
+      counts[`${a}${a}`]=(counts[`${a}${a}`]||0)+1;
+
+    if(b===c)
+      counts[`${b}${b}`]=(counts[`${b}${b}`]||0)+1;
+
   });
 
   return Object.entries(counts)
-    .sort((a,b)=>b[1]-a[1] || a[0].localeCompare(b[0]))
+    .sort(
+      (a,b)=>
+        b[1]-a[1]||
+        a[0].localeCompare(b[0])
+    )
     .slice(0,3)
     .map(x=>x[0]);
 }
 
+
 function buildSingles(rs,heroes,usage){
+
   const counts=countDigits(rs);
 
-  const candidates=[0,1,2,3,4,5,6,7,8,9]
+  return [0,1,2,3,4,5,6,7,8,9]
     .sort((a,b)=>{
+
       const ua=usage[a]||0;
       const ub=usage[b]||0;
 
@@ -382,99 +413,174 @@ function buildSingles(rs,heroes,usage){
 
       if(ha!==hb)return hb-ha;
 
-      return counts[b]-counts[a] || a-b;
-    });
-
-  return candidates.slice(0,2).map(String);
+      return counts[b]-counts[a]||a-b;
+    })
+    .slice(0,2)
+    .map(String);
 }
+
 
 function verifyMain(combos,usage){
-  if(combos.length!==6)
+
+  if(combos.length!==6){
+
     return "⚠️ 6 valid Main Combos could not be formed under the locked rules.";
+  }
 
-  const used=[];
-  combos.forEach(x=>{
-    [...x.combo].forEach(d=>used.push(Number(d)));
-  });
+  const used=
+    combos.flatMap(
+      x=>[...x.combo].map(Number)
+    );
 
-  const unique=[...new Set(used)];
+  if(Math.max(...usage)>2){
 
-  const maxUse=Math.max(...usage);
-
-  if(maxUse>2)
     return "⚠️ Verification failed: a digit exceeded 2 uses.";
+  }
 
-  if(unique.length<10)
-    return `⚠️ Main 6 formed, but only ${unique.length}/10 digits are covered.`;
+  if(
+    combos.some(
+      x=>new Set(x.combo).size!==3
+    )
+  ){
 
-  return "✅ Master Formula verification passed: 6 Main Combos • max digit usage ≤2 • 0–9 covered.";
+    return "⚠️ Verification failed: repeated digit inside a Main combo.";
+  }
+
+  if(new Set(used).size<10){
+
+    return `⚠️ Main 6 formed, but only ${new Set(used).size}/10 digits are covered.`;
+  }
+
+  return "✅ Master Formula verification passed: 6 Main Combos • max 2 uses • 0–9 covered.";
 }
 
+
 function renderFinal(rs,heroes){
+
   const result=buildMainCombos(rs,heroes);
 
-  $("mainCombos").innerHTML=result.combos.length
-    ? result.combos.map(x=>`
-        <div class="combo">
-          ${x.combo}
-          <div class="small">score ${x.score}</div>
-        </div>
-      `).join("")
-    : `<div class="warn">6 valid combinations unavailable.</div>`;
+  $("mainCombos").innerHTML=
+    result.combos.length
+
+    ?result.combos.map(x=>`
+      <div class="combo">
+        ${x.combo}
+        <div class="small">score ${x.score}</div>
+      </div>
+    `).join("")
+
+    :`<div class="warn">
+        6 valid combinations unavailable.
+      </div>`;
 
   const doubles=buildDoubleSets(rs);
 
-  $("doubleSets").innerHTML=doubles.length
-    ? doubles.map(x=>`
-        <span class="pill double">${x}</span>
-      `).join("")
-    : `<span class="muted">No Double found in the 10-day data.</span>`;
+  $("doubleSets").innerHTML=
+    doubles.length
 
-  const singles=buildSingles(rs,heroes,result.usage);
+    ?doubles.map(x=>
+      `<span class="pill double">${x}</span>`
+    ).join("")
 
-  $("singleDigits").innerHTML=singles
-    .map(x=>`<span class="pill single">${x}</span>`)
+    :`<span class="muted">
+        No Double found in the 10-day data.
+      </span>`;
+
+  $("singleDigits").innerHTML=
+    buildSingles(
+      rs,
+      heroes,
+      result.usage
+    )
+    .map(x=>
+      `<span class="pill single">${x}</span>`
+    )
     .join("");
 
   $("verification").textContent=
-    verifyMain(result.combos,result.usage);
+    verifyMain(
+      result.combos,
+      result.usage
+    );
 }
+
 
 function analyze(){
-  const rs=parseResults();
 
-  $("dayStatus").textContent=`Results: ${rs.length} / 10`;
+  $("appError").textContent="";
 
-  if(!rs.length){
-    clearAll();
-    return;
+  try{
+
+    const rs=parseResults();
+
+    $("dayStatus").textContent=
+      `Results: ${rs.length} / 10`;
+
+    if(!rs.length){
+
+      $("appError").textContent=
+        "⚠️ Enter at least one valid 3-digit result.";
+
+      return;
+    }
+
+    const counts=countDigits(rs);
+
+    const mc=mcDigits();
+
+    const heroes=getHeroes(
+      counts,
+      mc
+    );
+
+    renderPressure(counts);
+    renderHeroes(heroes);
+    renderFinal(rs,heroes);
+
+  }catch(err){
+
+    console.error(err);
+
+    $("appError").textContent=
+      "⚠️ Analyze error. Please check the entered data.";
   }
-
-  const counts=countDigits(rs);
-  const mc=mcDigits();
-  const heroes=getHeroes(counts,mc);
-
-  renderPressure(counts);
-  renderHeroes(heroes);
-  renderFinal(rs,heroes);
 }
 
+
 function clearAll(){
+
   $("results").value="";
+
   $("mc1").value="";
   $("mc2").value="";
 
   $("digits").innerHTML="";
   $("heroes").innerHTML="";
+
   $("mainCombos").innerHTML="";
   $("doubleSets").innerHTML="";
+
   $("singleDigits").innerHTML="";
+
   $("verification").textContent="";
-  $("dayStatus").textContent="Results: 0 / 10";
+
+  $("dayStatus").textContent=
+    "Results: 0 / 10";
+
+  $("appError").textContent="";
 }
 
-$("analyzeBtn").addEventListener("click",analyze);
-$("clearBtn").addEventListener("click",clearAll);
+
+$("analyzeBtn").addEventListener(
+  "click",
+  analyze
+);
+
+$("clearBtn").addEventListener(
+  "click",
+  clearAll
+);
+
 </script>
 
 </body>
