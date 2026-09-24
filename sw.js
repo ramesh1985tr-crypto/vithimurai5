@@ -1,5 +1,4 @@
-
-const CACHE = 'formula-pro-v2-2';
+const CACHE = 'formula-pro-v2-4';
 const ASSETS = ['./','./index.html','./manifest.json','./icon-192.png','./icon-512.png'];
 
 self.addEventListener('install', e => {
