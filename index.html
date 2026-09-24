@@ -255,7 +255,139 @@ button{
 
 </div>
 
+<!-- =========================
+     FORMULA CONTROL CENTER
+     ========================= -->
 
+<div class="card" id="formulaControlPanel">
+
+  <div class="title">⚙️ Formula Control</div>
+
+  <div class="muted">
+    Current Formula Version
+  </div>
+
+  <div
+    id="formulaVersion"
+    class="status"
+    style="margin-top:8px">
+    ORDER 2.1
+  </div>
+
+
+  <div
+    class="status"
+    style="margin-top:12px">
+
+    <b>Formula Update</b>
+
+    <div
+      class="muted"
+      style="margin-top:6px">
+
+      Future formula changes must be
+      applied through this section.
+
+    </div>
+
+  </div>
+
+
+  <label style="margin-top:12px">
+    New Formula / Rule
+  </label>
+
+  <textarea
+    id="formulaUpdateInput"
+    rows="7"
+    placeholder="இங்கே புதிய Formula Rule / Update கொடுக்கலாம்..."></textarea>
+
+
+  <div
+    class="grid"
+    style="margin-top:10px">
+
+    <button
+      id="formulaPreview"
+      type="button">
+
+      🔍 Preview Update
+
+    </button>
+
+
+    <button
+      id="formulaApply"
+      type="button"
+      class="action">
+
+      ✅ Apply Update
+
+    </button>
+
+  </div>
+
+
+  <div
+    id="formulaUpdateStatus"
+    class="status muted"
+    style="margin-top:10px">
+
+    No formula update pending.
+
+  </div>
+
+
+  <div
+    class="status"
+    style="margin-top:12px">
+
+    <b>📜 Formula History</b>
+
+    <div
+      id="formulaHistory"
+      class="muted"
+      style="margin-top:8px">
+
+      ORDER 2.1 — Active
+
+    </div>
+
+  </div>
+
+
+  <button
+    id="formulaRollback"
+    type="button"
+    class="secondary"
+    style="margin-top:10px">
+
+    ↩️ Restore Previous Formula
+
+  </button>
+
+
+  <div
+    class="status"
+    style="margin-top:12px">
+
+    🔒 Formula Safety Lock
+
+    <div
+      class="muted"
+      style="margin-top:6px">
+
+      No fixed combos • No fixed numbers •
+      No previous output reuse •
+      No cross-time mixing • Fresh calculation
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- END FORMULA CONTROL CENTER -->
 <div class="card">
 
 <div class="title">Analysis</div>
