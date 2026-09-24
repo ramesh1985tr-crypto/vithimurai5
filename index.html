@@ -281,30 +281,7 @@ function renderHeroes(heroes){
  6. Try to cover all 0-9 across Main 6
 */
 
-function buildMainCombos(rs,heroes){
-  const counts=countDigits(rs);
 
-  const all=[0,1,2,3,4,5,6,7,8,9];
-
-  const ranked=[...all].sort(
-    (a,b)=>counts[b]-counts[a] || a-b
-  );
-
-  const firstPool=heroes.length
-    ? [...heroes,...ranked.filter(d=>!heroes.includes(d))]
-    : ranked;
-
-  const usage=Array(10).fill(0);
-  const combos=[];
-
-  function valid(a,b,c){
-    if(a===b || a===c || b===c)return false;
-
-    if(usage[a]>=2 || usage[b]>=2 || usage[c]>=2)
-      return false;
-
-    if(heroes.length && !heroes.includes(a))
-      return false;
 
     return true;
   }
