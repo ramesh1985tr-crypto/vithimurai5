@@ -658,15 +658,15 @@ function buildMain(results,mc){
     of using a fixed combo list.
   */
 
-  let states = [{
-    combos:[],
-    usage:Array(10).fill(0),
-    mask:0,
-    score:0
-  }];
 
 
-
+let states = [{
+  combos:[],
+  comboKeys:[],
+  usage:Array(10).fill(0),
+  mask:0,
+  score:0
+}];
   for(let depth=0; depth<6; depth++){
 
     const next = [];
@@ -681,9 +681,14 @@ function buildMain(results,mc){
           Same combo cannot repeat
         */
 
-        if(
-          state.combos.includes(q.key)
-        ) continue;
+        const comboKey =
+  [q.a,q.b,q.d]
+    .sort((x,y) => x-y)
+    .join("");
+
+if(
+  state.comboKeys.includes(comboKey)
+) continue;
 
 
 
@@ -714,16 +719,18 @@ function buildMain(results,mc){
 
 
         const combos =
-          [...state.combos,q.key];
+  [...state.combos,q.key];
 
+const comboKeys =
+  [...state.comboKeys,comboKey];
 
-
-        next.push({
-          combos,
-          usage,
-          mask,
-          score:state.score + q.score
-        });
+next.push({
+  combos,
+  comboKeys,
+  usage,
+  mask,
+  score:state.score + q.score
+});
 
       }
 
